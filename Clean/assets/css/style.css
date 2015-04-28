@@ -28,6 +28,40 @@ a:hover {
 	color: #999;
 }
 
+.Over
+{
+	position:fixed;
+	margin-top: 330;
+	margin-left: 225;
+	font-size: 150px;
+	font-style: bold;
+	color: red;
+}
+.Score
+{
+	position:fixed;
+	margin-top: 950;
+	margin-left: 970;
+	font-size: 30px;
+	font-style: bold;
+	color: red;
+}
+.Display
+{
+	position:fixed;
+	margin-top: 950;
+	margin-left: 870;
+	font-size: 30px;
+	font-style: bold;
+	color: red;
+}
+audio
+{
+	display: none;
+}
+
+
+
 /* ---------------------------------------------- /*
  * Transition elsements
 /* ---------------------------------------------- */

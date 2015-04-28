@@ -1,0 +1,307 @@
+
+<html>
+
+
+<head>
+<audio controls>
+  <source src="drop.mp3" type="audio/mpeg">
+</audio>
+ 
+
+ <style>
+
+ html, body { padding:0; margin:0; }
+
+ </style>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<!-- I wanted to add an audio when something dissapears and create a perpulsion system to user based on position clicked ....like the 8bit?? game asteroids?... -->
+
+
+<script>
+var $audio = $('audio');
+var audio = $audio[0];
+	// all our animation will go in here
+$(document).ready(function()
+{
+	 var canvas = $("#myCanvas");	 
+	 var context = canvas.get(0).getContext("2d");
+	 var counter = 0;
+		 
+	 //animate();
+		 var Object  =  function(newX, newY, size, c, cR, a, vX, vY)
+		 {
+			 this.x = newX;
+			 this.y = newY;
+			 this.w = size;
+			 this.counter = c;
+			 this.counterRate = cR;
+			 this.area = a;
+			 //add this velocity to objects
+			 this.veloX = vX;
+			 this.veloY = vY;
+			
+		 }
+	 var objs = new Array();
+		 for(var i=0; i<10; i++)
+		 {
+
+			 var tmpX = Math.random() * canvas.width();
+
+			 var tmpY = Math.random() * canvas.height();
+			 
+			 var tmpSize = (Math.random() * 20) + 10;
+
+			 var tmpCounter = Math.random()*2;
+
+			 var tmpCounterRate = Math.random()*.2;
+
+			 var tmpArea = 200 * Math.random();
+			 // added movement
+			 var tmpVeloX = Math.random() * 2;
+			 var tmpVeloY = Math.random();
+
+			 objs.push( new Object(tmpX, tmpY, tmpSize, tmpCounter, tmpCounterRate, tmpArea , tmpVeloX, tmpVeloY)  );
+
+		 } 
+	 // must create zero due to addition of velocity xy
+	 var user = new Object(canvas.width()/2, canvas.height()/2,20, 0, 0, 0,0,0);
+	function animate2()   
+		{
+			// add velocity here
+         //background color/box
+		 context.fillStyle = "rgb(0,50,100)";
+		 context.fillRect(0,0, canvas.width(), canvas.height()); 
+		 
+		 //moves
+			 for(var i=0; i<objs.length; i++)
+			 {
+		//this changes the color of the moving squares based on size compared to the user
+
+			 	if(user.w > objs[i].w)
+			 	{
+			 		context.fillStyle = "rgb(100, 255, 0)";
+			    }
+			 	else
+			 	{
+			 		context.fillStyle = "rgb(255, 0, 0)";
+			    }
+				 var xCheck = true;
+				 var yCheck = true;
+			// added a new game button to restart
+				 $(document).ready(function()
+				 		{
+						  $("#newGame").click(function(){
+						  			$("button").hide();
+ 									location.reload();
+								});
+						});
+				 var alteredX = objs[i].x;//objs[i].x + ( objs[i].area * Math.sin(objs[i].counter) );
+
+				 if((user.x > (alteredX  + objs[i].w)   ||   alteredX  > (user.x + user.w)) )
+				 {
+				 	xCheck = false;
+				 }
+
+				 if((user.y > (objs[i].y + objs[i].w)    ||   objs[i].y  > (user.y + user.w)) )
+				 {
+				 	yCheck = false;
+				 }
+		//create condition as too what happens when user touches objects
+				 if(xCheck && yCheck )
+				 {
+				 	//suck "life" out of objs and places into user size
+				 	if( objs[i].w > 0 && user.w > objs[i].w)
+				 	{
+				 		objs[i].w -= .08;
+				 		user.w += .01;
+				 	}
+				 	// if the objs gets less that 0 it will get ride on the objects and also shows score when triggered.
+				 	else if(objs[i].w <= 0)
+				 	{
+				 		objs[i].x = objs[i].x - objs[i].x ;
+				 		objs[i].y = objs[i].y - objs[i].y ;
+				 		counter = counter + 1; 
+				 		out= "<div class=Score>" + counter
+				 		document.getElementById("Score").innerHTML = out;
+				 		$('document').ready(function(){
+					        audio.play();
+					    },function(){
+					        audio.pause();
+					    });
+
+				 	}
+				 	// objs suck life from user
+				 	else if(objs[i].w > 0 && user.w < objs[i].w)
+				 	{
+				 		objs[i].w += .08;
+				 		user.w -= .08;
+				 	}
+				 	// game over and stops user from responding to objs
+				 	if(user.w <= 0)
+				 	{
+				 		user.x = user.x - user.x ;
+				 		user.y = user.y - user.y ; 
+				 		out = "<div class= over>"+ "GameOver" +"</div>";
+				 		document.getElementById("OverScreen").innerHTML = out;				 		
+				 	}
+				 
+
+				 	//checks where the user is and object to make sure correct outcome.
+				 	/*console.log(i);
+				 	console.log(objs[i].w);	
+				 	console.log(user.w);
+				 	console.log("overlap!!!!!!!");*/
+				 }
+				 else
+				 { 
+				 // if user and objs i DO NOT overlap
+				 	//objs[i].counter = objs[i].counter + objs[i].counterRate; 
+				 	
+				 	objs[i].x = objs[i].x + objs[i].veloX * Math.random();
+				 	objs[i].y = objs[i].y + objs[i].veloY;
+
+
+				 }
+				 //bouncing off walls
+				 if(  objs[i].x > (myCanvas.width - objs[i].w) || objs[i].x < 0 )
+				 {
+				 	objs[i].veloX *= -1;	 	
+				 }
+				 if (objs[i].y > (myCanvas.height - objs[i].w) || objs[i].y < 0) 
+				 {
+				 	objs[i].veloY *= -1;
+				 }
+				
+				 
+				 //console.log(objs[i].area);
+				 context.save();
+				 //moves
+				 // context.translate( objs[i].area * Math.sin(objs[i].counter)  , 0);
+				 context.fillRect(objs[i].x, objs[i].y, objs[i].w, objs[i].w);
+				 context.restore();
+			 }
+
+
+		 //user box
+		  context.fillStyle = "rgb(0, 0, 255)";
+		  context.shadowBlur=40;
+		  context.shadowColor = 'rgb(77,77,255)';
+		  context.fillRect(user.x, user.y, user.w, user.w);
+		  requestAnimationFrame(animate2);
+		  
+		}
+		animate2();
+
+
+	$(window).keydown(function(e)
+	{
+		 // console.log(e.keyCode);
+
+		 var keycode = e.keyCode;
+		 if(keycode == 37) // left arrow key
+		 {
+			 user.x -= 6;
+
+			 if(user.x <0)
+			 	{ 
+			 		user.x = 0;
+			 	}
+		 }
+		 else if(keycode == 38)
+		 { //up arrow key
+
+			 user.y -= 6;
+
+			 if(user.y <0)
+			 	{ 
+			 		user.y = 0;
+			 	}
+		 }
+
+		 else if(keycode == 39)
+		 { //right arrow key
+
+			 user.x += 6;
+
+			 if(user.x+user.w >canvas.width())
+			 	{ 
+			 		user.x = canvas.width() - user.w;
+			 	}
+		 }
+		 else if(keycode ==40)
+		 { //down arrow key
+
+			 user.y += 6;
+
+			 if(user.y+user.w >canvas.height())
+			 	{
+			 	 user.y = canvas.height() - user.w;
+			 	}
+		 }
+	});
+ 	
+ 	$(document).ready(function()
+	{
+	 $("#myCanvas").bind("click",function()
+		{
+			 var x = event.pageX;
+			 var y = event.pageY;		
+				 user.x = x - (user.w/2);
+				 user.y = y - (user.w/2);			 
+			 //console.log(x + "    " + y + " user   "+ user.x  +"    " +  user.y);
+			 
+	    });
+	});
+});
+
+//posistion score and over screen over canvas
+</script>
+<style type="text/css">
+.Over
+{
+	position:fixed;
+	margin-top: 330;
+	margin-left: 225;
+	font-size: 150px;
+	font-style: bold;
+	color: red;
+}
+.Score
+{
+	position:fixed;
+	margin-top: 950;
+	margin-left: 970;
+	font-size: 30px;
+	font-style: bold;
+	color: red;
+}
+.Display
+{
+	position:fixed;
+	margin-top: 950;
+	margin-left: 870;
+	font-size: 30px;
+	font-style: bold;
+	color: red;
+}
+audio
+{
+	display: none;
+}
+
+
+</style>
+</head>
+
+<body>
+	<div id="OverScreen"></div>
+	<button id="newGame"> New Game</button>
+	<div class="Display"> Score: </div>
+	<div id="Score"></div>
+	<canvas id="myCanvas"  width="1000" height="1000" ></canvas>
+	
+</body>
+
+</html>
