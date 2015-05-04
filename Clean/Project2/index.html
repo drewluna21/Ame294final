@@ -1,0 +1,170 @@
+<html>
+<head>
+
+<title>
+    Top 25 iOS apps
+</title>
+<style>
+body
+{
+    background-color: blue;
+}
+#dynamicContent
+{
+    border: inset;
+    max-width: 600px;
+    background: black 600px;    
+    
+}
+h1
+{
+    color: white;
+    text-align: center;
+    background-color: black;
+    border:outset;
+    max-width: 100%;
+    font-size: 300%;
+
+}
+
+.image
+{
+    background-image: 200px;
+    background-size: contain;
+    background-position: 0%;
+    background-repeat: no-repeat;
+    width: 600px;
+    height: 100px;    
+
+}
+p.title
+{
+    background-color: rgba(200,200,200,.2);
+    color: gray;
+    font-weight: bold;
+    font-size: 200%;
+    text-align: left;
+    font-family: Impact, Charcoal, sans-serif;
+}
+a.href
+{
+    text-align: left;
+    color: rgba(0,0,255,.8);
+}
+
+p.summary
+{
+    font-size: 100%;
+    text-align: left; 
+    color: white;
+    background-position: center;
+    background-color: rgba(200,200,200,.2);
+    text-indent: 10px;
+}
+p.price{
+    font-size: 100%;
+    text-align: right;
+    color: white;
+    background-size: 100px;
+    background-position: right;
+    background-color: rgba(200,200,200,.2);
+    
+}
+.set
+{
+    max-width: 600px;
+    margin-left: 0px;
+    
+
+}
+</style>
+
+<script>
+
+function getXMLHTTPRequest()
+{
+    var request;
+    // Lets try using ActiveX to instantiate the XMLHttpRequest object
+    try{
+        request = new ActiveXObject("Microsoft.XMLHTTP");
+    }catch(ex1){
+    try{
+        request = new ActiveXObject("Msxml2.XMLHTTP");
+    }catch(ex2){
+        request = null;
+    }
+                                            }
+
+    // If the previous didn't work, lets check if the browser natively support XMLHttpRequest 
+    if(!request && typeof XMLHttpRequest != "undefined"){
+    //The browser does, so lets instantiate the object
+        request = new XMLHttpRequest();
+    }
+
+    return request;
+}
+
+function loadRSS(url, callback)
+{
+    var aXMLHttpRequest = getXMLHTTPRequest();
+    var allData;
+
+    if (aXMLHttpRequest)
+    {
+        aXMLHttpRequest.open("GET", url, true);
+    
+        aXMLHttpRequest.onreadystatechange = function (aEvt) {
+            if(aXMLHttpRequest.readyState == 4){
+                allData = aXMLHttpRequest.responseText;
+                callback(allData)
+            }
+        };
+    
+        //Lets fire off the request
+        aXMLHttpRequest.send(null);
+    }
+    else
+    {
+        //Oh no, the XMLHttpRequest object couldn't be instantiated.
+        alert("A problem occurred instantiating the XMLHttpRequest object.");
+    }
+}
+
+function load()
+{
+    loadRSS("./ex.rss",formatRSS);
+}
+
+function formatRSS(data)
+{
+    
+   var rssFeed = JSON.parse(data).feed.entry; 
+   var output = "";
+   var output2 = "";
+   for(var i = 0; i < rssFeed.length; i++){
+       output = output + "<p class='title'>" + rssFeed[i].title.label + "</p>";
+       output = output + "<p class= 'image' style='background-image:url(" + rssFeed[i]['im:image'][0].label +  ")'>";       
+       output = output + "<p class='price'>" + rssFeed[i]['im:price'].label + "</p>";
+       output = output + "<p class='Summary'>" + rssFeed[i].summary.label + "</p>";
+      output = output + "<a class='href' href='" + rssFeed[i].link.attributes.href + "'>"+ rssFeed[i].link.attributes.href + "</a>";
+
+       output = output + "<hr class='set'>";
+
+       
+      
+    }
+   document.getElementById('dynamicContent').innerHTML = output;
+   
+   
+}
+</script>
+
+</head>
+
+<body onload='load()'>
+<h1> Top 25 Apps - by Andrew Luna</h1>
+<div id='dynamicContent'> </div>
+
+</body>
+
+</html>
