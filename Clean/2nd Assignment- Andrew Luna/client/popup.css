@@ -1,0 +1,59 @@
+#overlay
+{
+	 border: inset;
+	 display: none;
+	 background-color: rgba( 233, 233,233,.8);
+	 position: fixed;
+	 height: 15%;
+	 width: 30%;
+	 top: 35%;
+	 left: 35%;
+	 text-align: center;
+	 font-size: 15px;
+
+}
+#confAnswer
+{
+	text-align: center;
+}
+
+#firstName
+{
+	text-align: center;
+}
+.question
+{
+	text-transform: uppercase;
+	text-align: center;
+	text-decoration: bold;
+}
+.confAnswer
+{
+	text-align: center;
+	color: gray;
+	margin-bottom:  20px;
+}
+.btn-default {
+  
+  color: #ffffff;
+  background-color: #424242;
+  border-color: #424242;
+}
+.btn {
+
+display: inline-block;
+margin-bottom: 0;
+font-weight: normal;
+text-align: center;
+vertical-align: middle;
+cursor: pointer;
+background-image: none;
+border: 1px solid transparent;
+white-space: nowrap;
+padding: 8px 12px;
+font-size: 14px;
+line-height: 1.42857143;
+border-radius: 4px;
+
+}
+

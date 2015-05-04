@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script type="text/javascript">
+
+function getXMLHTTPRequest()
+    {
+        var request;
+    
+        // Lets try using ActiveX to instantiate the XMLHttpRequest object
+        try{
+            request = new ActiveXObject("Microsoft.XMLHTTP");
+        }catch(ex1){
+            try{
+                request = new ActiveXObject("Msxml2.XMLHTTP");
+            }catch(ex2){
+                request = null;
+            }
+        }
+
+        // If the previous didn't work, lets check if the browser natively support XMLHttpRequest 
+        if(!request && typeof XMLHttpRequest != "undefined"){
+            //The browser does, so lets instantiate the object
+            request = new XMLHttpRequest();
+        }
+
+        return request;
+    }
+    
+    
+   function loadURL(url, callback)
+   {
+       var aXMLHttpRequest = getXMLHTTPRequest();
+       var allData;
+
+       if (aXMLHttpRequest){
+           aXMLHttpRequest.open("GET", url, true);
+           aXMLHttpRequest.onreadystatechange = function (aEvt) {
+                if(aXMLHttpRequest.readyState == 4){
+                   allData = aXMLHttpRequest.responseText;
+                   callback(allData)
+               }
+
+        };
+     
+        //Lets fire off the request
+           aXMLHttpRequest.send(null);
+       }
+
+       else
+       {
+           //Oh no, the XMLHttpRequest object couldn't be instantiated.
+           alert("A problem occurred instantiating the XMLHttpRequest object.");
+       }
+   }
+    
+    
+   function addNew()
+   {
+       var newtodo = prompt("Enter new todo", "")
+       var url = "./addtodo?newtodo=" + encodeURIComponent(newtodo) + "&todoid=" + newDate().getTime().toString();
+       var callback = function(data){
+           if(data === "added"){
+               updateList();
+           }
+       } 
+       loadURL(url, callback);   
+   }
+   
+   function updateList()
+   {
+       var url = "./listtodos";  
+       var callback = function(data)
+       {
+           var list = JSON.parse(data);
+           var output = "";
+           for(var i=0; i < list.length; i++)
+           {
+               output = output + "<p>" + list[i].newtodo + "</p>";
+               output = output + "<a href='javascript:deleteTodo(" + list[i].todoid.toString() + ")'>" + "Delete</a>";
+               output = output + "<hr>";
+           }
+           document.getElementById("list").innerHTML = output;
+       }  
+       loadURL(url, callback);   
+   }
+   function deleteTodo(index)
+   {
+       var url = "./deletetodo?index=" + index ;
+       var r = confirm(" Are you sure?");
+       if ( r == true )
+	{	
+       var callback = function(data)
+       {
+	   if(data === "deleted")
+           {
+             updateList();
+           }
+	updateList();
+       } 
+       loadURL(url, callback);
+	}
+	else
+	{
+		updateList();
+	} 
+   }
+	    
+    window.onload = updateList();
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Agency - Start Bootstrap Theme</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/agency.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top" class="index">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">TODO</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">List</a>
+                    </li>
+                            
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-lead-in">Todo</div>
+                <div class="intro-heading">By:Andrew Luna</div>
+                <a href='javascript:addNew()' class="page-scroll btn btn-xl">Add new</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">List</h2>
+                    <div id ="list">
+                        List is Empty
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="js/classie.js"></script>
+    <script src="js/cbpAnimatedHeader.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/agency.js"></script>
+
+</body>
+
+</html>
