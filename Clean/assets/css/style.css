@@ -16,7 +16,7 @@ body {
 
 img {
 	max-width: 100%;
-	height: auto;
+	max-height: 100%;
 }
 
 a {
@@ -36,6 +36,11 @@ a:hover {
 	font-size: 150px;
 	font-style: bold;
 	color: red;
+}
+.me
+{
+	width:30px;
+	height:10px;
 }
 .Score
 {
@@ -377,7 +382,7 @@ textarea.form-control {
 /* ---------------------------------------------- */
 
 #home {
-	background: url(../images/cover.jpg);
+	background: url(../images/Main.jpg);
 	background-color: #222;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
@@ -723,6 +728,16 @@ textarea.form-control {
 		text-align: center;
 	}
 
+}
+.me
+{
+	width:120px;
+	height:55px;
+	
+}
+.click
+{
+ font-size:12px;	
 }
 
 @media (max-width: 480px) {
